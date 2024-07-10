@@ -44,3 +44,6 @@ ros2 topic echo /lidar/pointcloud > /tmp/ros2_to_gst
 
 Host Side (receiving):
 `gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp, payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink`
+
+https://stackoverflow.com/questions/75418645/using-gstream-with-fifo
+https://www.gnu.org/software/libc/manual/html_node/Pipes-and-FIFOs.html
