@@ -27,3 +27,20 @@ Client Side (sending):
 Host Side (receiving):
 
 `gst-launch-1.0 -v udpsrc port=5004 ! application/x-rtp, payload=96 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink`
+
+
+### LiDAR (not working yet)
+
+
+
+
+Client Side (sending):
+``` console
+mkfifo /tmp/ros2_to_gst
+ros2 topic echo /lidar/pointcloud > /tmp/ros2_to_gst
+```
+
+`gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! udpsink host=<receiver_ip> port=5000`
+
+Host Side (receiving):
+`gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp, payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink`
