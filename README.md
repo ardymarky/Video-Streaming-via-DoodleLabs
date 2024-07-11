@@ -32,18 +32,17 @@ Host Side (receiving):
 ### LiDAR (not working yet)
 
 
-
-
 Client Side (sending):
-``` console
+``` terminal
 mkfifo /tmp/ros2_to_gst
 ros2 topic echo /lidar/pointcloud > /tmp/ros2_to_gst
 ```
 
-`gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! udpsink host=<receiver_ip> port=5000`
+`gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! udpsink host=<receiver_ip> port=5000`sync=false
 
 Host Side (receiving):
-`gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp, payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink`
+
+`gst-launch-1.0 -v udpsrc port=5000 ! filesink location=<file-location>.txt`
 
 https://stackoverflow.com/questions/75418645/using-gstream-with-fifo
 https://www.gnu.org/software/libc/manual/html_node/Pipes-and-FIFOs.html
