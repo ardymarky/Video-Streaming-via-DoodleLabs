@@ -34,15 +34,17 @@ Host Side (receiving):
 
 Client Side (sending):
 ``` terminal
+source blickfeld/install/setup.bash
 mkfifo /tmp/ros2_to_gst
-ros2 topic echo /lidar/pointcloud > /tmp/ros2_to_gst
+ros2 topic echo /lidar/pointcloud --truncate-length 20000 > /tmp/ros2_to_gst
 ```
 
-`gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! udpsink host=<receiver_ip> port=5000`sync=false
+`GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/ gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! gzenc ! udpsink host=<receiver_ip> port=5000`sync=false
 
 Host Side (receiving):
 
 `gst-launch-1.0 -v udpsrc port=5000 ! filesink location=<file-location>.txt`
 
+https://github.com/Snec/gst-gz
 https://stackoverflow.com/questions/75418645/using-gstream-with-fifo
 https://www.gnu.org/software/libc/manual/html_node/Pipes-and-FIFOs.html
