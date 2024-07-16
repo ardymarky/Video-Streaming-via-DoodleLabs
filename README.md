@@ -36,14 +36,18 @@ Client Side (sending):
 ``` terminal
 source blickfeld/install/setup.bash
 mkfifo /tmp/ros2_to_gst
-ros2 topic echo /bf_lidar/point_cloud_out --truncate-length 20000 > /tmp/ros2_to_gst
+ros2 topic echo /bf_lidar/point_cloud_out --truncate-length 200000 > /tmp/ros2_to_gst
 ```
 
-`GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/ gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! gzenc ! udpsink host=<receiver_ip> port=5000`sync=false
+`GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/ gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! gzenc ! udpsink host=<receiver_ip> port=5000 sync=false`
+or
+`GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/ gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! gzenc ! tcpclientsink host=<receiver_ip> port=5000`
 
 Host Side (receiving):
 
-`gst-launch-1.0 -v udpsrc port=5000 ! filesink location=<file-location>.txt`
+`GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/ gst-launch-1.0 -v udpsrc port=5000 ! gzenc ! filesink location=<file-location>.txt`
+or
+`GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/ gst-launch-1.0 -v tcpserversrc host=0.0.0.0 port=5000 ! queue ! gzdec ! filesink location=<file-location>.txt
 
 https://github.com/Snec/gst-gz
 https://stackoverflow.com/questions/75418645/using-gstream-with-fifo
