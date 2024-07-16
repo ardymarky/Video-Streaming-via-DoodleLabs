@@ -36,7 +36,7 @@ Client Side (sending):
 ``` terminal
 source blickfeld/install/setup.bash
 mkfifo /tmp/ros2_to_gst
-ros2 topic echo /lidar/pointcloud --truncate-length 20000 > /tmp/ros2_to_gst
+ros2 topic echo /bf_lidar/point_cloud_out --truncate-length 20000 > /tmp/ros2_to_gst
 ```
 
 `GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/ gst-launch-1.0 -v filesrc location=/tmp/ros2_to_gst ! gzenc ! udpsink host=<receiver_ip> port=5000`sync=false
